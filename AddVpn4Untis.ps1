@@ -16,16 +16,13 @@ Param
 	$DnsServer = ("10.0.0.51", "10.32.0.51"),
 
 	[parameter(Mandatory=$false)]
-	$ConnectionIdleTimer = 60,
-
-    [parameter(Mandatory=$false)]
-	[String]$DBServer = "MySQL" # or "SQL Server"
+	$ConnectionIdleTimer = 60
   )
 
-# Setzen der Ausführungsrichtline für den angemeldeten Benutzer
+# Setzen der AusfÃ¼hrungsrichtline fÃ¼r den angemeldeten Benutzer
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 
-# Löschen der VPN-Verbindung wenn sie vorhanden ist.
+# LÃ¶schen der VPN-Verbindung wenn sie vorhanden ist.
 if (Get-VpnConnection -Name $ConnectionName) {
     Remove-VpnConnection -Name $ConnectionName -Force -PassThru
 }
@@ -37,9 +34,6 @@ Add-VpnConnection -Name $ConnectionName -ServerAddress $VpnServerName -TunnelTyp
 Add-VpnConnectionTriggerTrustedNetwork -ConnectionName $ConnectionName -DnsSuffix $DnsSuffix -Force -PassThru
 Add-VpnConnectionTriggerDnsConfiguration -ConnectionName $ConnectionName -DnsSuffix $DnsSuffix -DnsIPAddress $DnsServer -Force -PassThru
 
-# Alle Untis-Installationen als TriggerApplication der VPN-Verbiundung zufügen.
+# Alle Untis-Installationen als TriggerApplication der VPN-Verbiundung zufÃ¼gen.
 $UntisPaths = Resolve-Path -Path "C:\Program Files*\Untis\*\untis.exe"
 Add-VpnConnectionTriggerApplication -ConnectionName $ConnectionName -ApplicationID $UntisPaths -Force -PassThru
-
-#VPN starten, um Benutzername und Kennwort eintragen zu lassen.
-#rasphone.exe $ConnectionName
